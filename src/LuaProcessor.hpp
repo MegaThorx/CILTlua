@@ -15,22 +15,28 @@ You should have received a copy of the GNU General Public License
 along with CILTlua.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../CILT/src/cilt.hpp"
-#include "LuaProcessor.hpp"
+#ifndef LUA_PROCESSOR_HPP
+#define LUA_PROCESSOR_HPP
 
-using namespace std;
+#include "../CILT/src/ciltProcessor.hpp"
 
-int main()
+class LuaProcessor : public CILTProcessor
 {
-	const path inputFilepath = PATH_STR("testInputFile");
-	
-	CompileResult compileResult = CILT::compile(inputFilepath, new LuaProcessor());
-	if(compileResult.fail())
+public:
+	void onMethodBegin(const std::string &methodName)
 	{
-		printf("Failed to compile, reason: %s\n", compileResult.getErrorMessage());
-		return (int)compileResult.getErrorCode();
+
 	}
-	
-	printf("Successfully compiled!\n");
-	return 0;
-}
+
+	void onMethodEnd(const std::string &methodName)
+	{
+
+	}
+
+	void onMethodCall(const std::string &namespaceName, const std::string &className, const std::string &methodName)
+	{
+		addTransCompData(namespaceName + "_" + className + "_" + methodName);
+	}
+};
+
+#endif // LUA_PROCESSOR_HPP
