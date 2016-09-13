@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with CILTlua.If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "cilt.hpp"
+#include "../CILT/src/cilt.hpp"
 
 using namespace std;
 
