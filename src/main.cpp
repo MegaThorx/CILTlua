@@ -19,12 +19,22 @@ along with CILTlua.If not, see <http://www.gnu.org/licenses/>.
 #include "LuaProcessor.hpp"
 
 using namespace std;
+typedef std::unordered_map<std::string, std::string> StringKeyValueMap;
 
 int main()
 {
 	const path inputFilepath = PATH_STR("testInputFile");
+
+	StringKeyValueMap clientMethods = 
+	{
+		std::make_pair("MTASAClient.Chat.output", "outputChatBox"),
+		std::make_pair("MTASAClient.Console.output", "outputConsole"),
+		std::make_pair("MTASAClient.Fps.getLimit", "getFPSLimit"),
+		std::make_pair("MTASAClient.Fps.setLimit", "setFPSLimit"),
+	};
+	LuaProcessor luaProcessor(clientMethods);
 	
-	CompileResult compileResult = CILT::compile(inputFilepath, new LuaProcessor());
+	CompileResult compileResult = CILT::compile(inputFilepath, &luaProcessor);
 	if(compileResult.fail())
 	{
 		printf("Failed to compile, reason: %s\n", compileResult.getErrorMessage());
