@@ -38,7 +38,7 @@ public:
 
 	A "full method name" for the "output" method above would be: MTASAClient.Chat.output
 	*/
-	LuaProcessor(const StringKeyValueMap &predefinedMethods) : m_predefinedMethods(predefinedMethods) {}
+	LuaProcessor(const std::unordered_map<std::string, std::string> &predefinedMethods) : m_predefinedMethods(predefinedMethods) {}
 
 	void onMethodBegin(const std::string &namespaceName, const std::string &className, const std::string &methodName)
 	{
@@ -68,14 +68,14 @@ public:
 private:
 	const std::string* getPredefinedMethod(const std::string &key)
 	{
-		StringKeyValueMap::const_iterator it = m_predefinedMethods.find(key);
+		std::unordered_map<std::string, std::string>::const_iterator it = m_predefinedMethods.find(key);
 		if(it != m_predefinedMethods.cend())
 			return &it->second;
 
 		return nullptr;
 	}
 private:
-	StringKeyValueMap m_predefinedMethods;
+	std::unordered_map<std::string, std::string> m_predefinedMethods;
 };
 
 #endif // LUA_PROCESSOR_HPP
