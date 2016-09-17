@@ -52,18 +52,32 @@ public:
 
 	// This implementation currently only works with static methods, but it will be fixed later.
 	// At this stage, we are just testing small things at a time
-	void onMethodCall(const std::string &namespaceName, const std::string &className, const std::string &methodName)
+	void onMethodCall(const std::string &namespaceName, const std::string &className, const std::string &methodName, const std::vector<CIL::Value> &args)
 	{
 		const std::string *predefinedFunction = getPredefinedMethod(namespaceName + "." + className + "." + methodName);
 		if(predefinedFunction)
-			addTransCompData(*predefinedFunction + "()\n");
+			addTransCompData(*predefinedFunction + "(");
 		else
-			addTransCompData(namespaceName + "_" + className + "_" + methodName + "()\n");
+			addTransCompData(namespaceName + "_" + className + "_" + methodName + "(");
+
+		for(uint32 i = 0; i < args.size(); ++i)
+		{
+			addTransCompData(args[i].toString());
+			if(i != args.size() - 1)
+				addTransCompData(", ");
+		}
+
+		addTransCompData(")\n");
 	}
 
 	void onMethodReturn()
 	{
 		addTransCompData("return\n");
+	}
+
+	void onMainMethodCall(const std::string &namespaceName, const std::string &className, const std::string &methodName, const std::vector<CIL::Value> &args)
+	{
+		addTransCompData(namespaceName + "_" + className + "_" + methodName + "()\n");
 	}
 private:
 	const std::string* getPredefinedMethod(const std::string &key)

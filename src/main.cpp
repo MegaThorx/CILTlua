@@ -24,7 +24,7 @@ int main()
 {
 	const path inputFilepath = PATH_STR("testInputFile");
 
-	std::unordered_map<std::string, std::string> clientMethods =
+	unordered_map<string, string> clientMethods =
 	{
 		make_pair("MTASAClient.Chat.output", "outputChatBox"),
 		make_pair("MTASAClient.Console.output", "outputConsole"),
@@ -39,6 +39,10 @@ int main()
 		printf("Failed to compile, reason: %s\n", compileResult.getErrorMessage());
 		return (int)compileResult.getErrorCode();
 	}
+
+	FILE *outputFile = fileOpen(PATH_STR("testOutputFile.lua"), PATH_STR("wb"));
+	fwrite(compileResult.getLuaOutput().c_str(), 1, compileResult.getLuaOutput().size(), outputFile);
+	fclose(outputFile);
 	
 	printf("Successfully compiled!\n");
 	return 0;
