@@ -52,22 +52,41 @@ public:
 
 	// This implementation currently only works with static methods, but it will be fixed later.
 	// At this stage, we are just testing small things at a time
-	void onMethodCall(const std::string &namespaceName, const std::string &className, const std::string &methodName, const std::vector<CIL::Value> &args)
+	void onMethodCall(CIL::Value lhsVar, const std::string &namespaceName, const std::string &className, const std::string &methodName, const std::vector<CIL::Value> &args)
 	{
-		const std::string *predefinedFunction = getPredefinedMethod(namespaceName + "." + className + "." + methodName);
-		if(predefinedFunction)
-			addTransCompData(*predefinedFunction + "(");
-		else
-			addTransCompData(namespaceName + "_" + className + "_" + methodName + "(");
-
-		for(uint32 i = 0; i < args.size(); ++i)
+		if(lhsVar.isVariable())
 		{
-			addTransCompData(args[i].toString());
-			if(i != args.size() - 1)
-				addTransCompData(", ");
+			addTransCompData("local ");
+			addTransCompData(lhsVar.toString() + " = ");
 		}
 
-		addTransCompData(")\n");
+		if(namespaceName == "System" && className == "String" && methodName == "Concat")
+		{
+			for(uint32 i = 0; i < args.size(); ++i)
+			{
+				addTransCompData(args[i].toString());
+				if(i != args.size() - 1)
+					addTransCompData("..");
+			}
+			addTransCompData("\n");
+		}
+		else
+		{
+			const std::string *predefinedFunction = getPredefinedMethod(namespaceName + "." + className + "." + methodName);
+			if(predefinedFunction)
+				addTransCompData(*predefinedFunction + "(");
+			else
+				addTransCompData(namespaceName + "_" + className + "_" + methodName + "(");
+
+			for(uint32 i = 0; i < args.size(); ++i)
+			{
+				addTransCompData(args[i].toString());
+				if(i != args.size() - 1)
+					addTransCompData(", ");
+			}
+
+			addTransCompData(")\n");
+		}
 	}
 
 	void onMethodReturn()
@@ -78,6 +97,17 @@ public:
 	void onMainMethodCall(const std::string &namespaceName, const std::string &className, const std::string &methodName, const std::vector<CIL::Value> &args)
 	{
 		addTransCompData(namespaceName + "_" + className + "_" + methodName + "()\n");
+	}
+
+	void onVariableDeclaration(SignatureType type, const std::string &name)
+	{
+		addTransCompData("local ");
+		addTransCompData(name + "\n");
+	}
+
+	void onVariableAssignment(const std::string &name, CIL::Value rhsValue)
+	{
+		addTransCompData(name + " = " + rhsValue.toString() + "\n");
 	}
 private:
 	const std::string* getPredefinedMethod(const std::string &key)

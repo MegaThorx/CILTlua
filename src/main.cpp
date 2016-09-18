@@ -24,14 +24,14 @@ int main()
 {
 	const path inputFilepath = PATH_STR("testInputFile");
 
-	unordered_map<string, string> clientMethods =
+	unordered_map<string, string> methods =
 	{
 		make_pair("MTASAClient.Chat.output", "outputChatBox"),
 		make_pair("MTASAClient.Console.output", "outputConsole"),
-		make_pair("MTASAClient.Fps.getLimit", "getFPSLimit"),
-		make_pair("MTASAClient.Fps.setLimit", "setFPSLimit"),
+		make_pair("MTASAShared.Fps.getLimit", "getFPSLimit"),
+		make_pair("MTASAShared.Fps.setLimit", "setFPSLimit"),
 	};
-	LuaProcessor luaProcessor(clientMethods);
+	LuaProcessor luaProcessor(methods);
 	
 	CompileResult compileResult = CILT::compile(inputFilepath, &luaProcessor);
 	if(compileResult.fail())
