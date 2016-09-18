@@ -64,7 +64,17 @@ public:
 		{
 			for(uint32 i = 0; i < args.size(); ++i)
 			{
-				addTransCompData(args[i].toString());
+				if(args[i].isVariable() || args[i].getType() != SignatureType::STRING)
+				{
+					addTransCompData("tostring(");
+					addTransCompData(args[i].toString());
+					addTransCompData(")");
+				}
+				else
+				{
+					addTransCompData(args[i].toString());
+				}
+
 				if(i != args.size() - 1)
 					addTransCompData("..");
 			}
@@ -108,6 +118,33 @@ public:
 	void onVariableAssignment(const std::string &name, CIL::Value rhsValue)
 	{
 		addTransCompData(name + " = " + rhsValue.toString() + "\n");
+	}
+
+	void onIfStatementBegin(const CILTCondition &condition)
+	{
+		addTransCompData("if(");
+		addTransCompData(condition.lhs.toString());
+
+		switch(condition.type)
+		{
+			case CILTCondition::Type::LESS:
+				addTransCompData("<");
+				break;
+			case CILTCondition::Type::GREATER_EQUAL:
+				addTransCompData(">=");
+				break;
+			default:
+				throw CILTProcessorException("Only conditions '<' and '>=' are implemented yet.");
+				break;
+		}
+
+		addTransCompData(condition.rhs.toString());
+		addTransCompData(")then\n");
+	}
+
+	void onIfStatementEnd()
+	{
+		addTransCompData("end\n");
 	}
 private:
 	const std::string* getPredefinedMethod(const std::string &key)
