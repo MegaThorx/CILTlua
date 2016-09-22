@@ -36,7 +36,7 @@ int main()
 	CompileResult compileResult = CILT::compile(inputFilepath, &luaProcessor);
 	if(compileResult.fail())
 	{
-		printf("Failed to compile, reason: %s\n", compileResult.getErrorMessage());
+		printf("Failed to compile, reason: %s\n", compileResult.getErrorMessage().c_str());
 		return (int)compileResult.getErrorCode();
 	}
 
