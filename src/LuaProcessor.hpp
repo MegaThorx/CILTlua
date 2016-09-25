@@ -139,16 +139,25 @@ public:
 		addTransCompData("if(");
 		addTransCompData(condition.lhs.toString());
 
-		switch(condition.type)
+		switch(condition.getType())
 		{
 			case cilt::Condition::Type::LESS:
 				addTransCompData("<");
 				break;
+			case cilt::Condition::Type::LESS_EQUAL:
+				addTransCompData("<=");
+				break;
+			case cilt::Condition::Type::GREATER:
+				addTransCompData(">");
+				break;
 			case cilt::Condition::Type::GREATER_EQUAL:
 				addTransCompData(">=");
 				break;
-			default:
-				throw cilt::ProcessorException("Only conditions '<' and '>=' are implemented yet.");
+			case cilt::Condition::Type::EQUALS:
+				addTransCompData("==");
+				break;
+			case cilt::Condition::Type::NOT_EQUALS:
+				addTransCompData("~=");
 				break;
 		}
 
