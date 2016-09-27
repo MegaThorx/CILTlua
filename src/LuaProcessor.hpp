@@ -138,29 +138,7 @@ public:
 	{
 		addTransCompData("if(");
 		addTransCompData(condition.lhs.toString());
-
-		switch(condition.getType())
-		{
-			case cilt::Condition::Type::LESS:
-				addTransCompData("<");
-				break;
-			case cilt::Condition::Type::LESS_EQUAL:
-				addTransCompData("<=");
-				break;
-			case cilt::Condition::Type::GREATER:
-				addTransCompData(">");
-				break;
-			case cilt::Condition::Type::GREATER_EQUAL:
-				addTransCompData(">=");
-				break;
-			case cilt::Condition::Type::EQUALS:
-				addTransCompData("==");
-				break;
-			case cilt::Condition::Type::NOT_EQUALS:
-				addTransCompData("~=");
-				break;
-		}
-
+		addConditionType(condition.getType());
 		addTransCompData(condition.rhs.toString());
 		addTransCompData(")then\n");
 	}
@@ -237,7 +215,80 @@ public:
 	{
 		addTransCompData(obj.toString() + "." + field.toString() + " = " + rhs.toString() + "\n");
 	}
+
+	void onDefineClass(const std::string &className)
+	{
+		addTransCompData("local " + className + " = {}\n");
+	}
+
+	void onWhileBegin(const cilt::Condition &condition)
+	{
+		addTransCompData("while(" + condition.lhs.toString());
+		addConditionType(condition.getType());
+		addTransCompData(condition.rhs.toString() + ")do\n");
+	}
+
+	void onWhileEnd()
+	{
+		addTransCompData("end\n");
+	}
+
+	void onBreak()
+	{
+		addTransCompData("break\n");
+	}
+
+	void onBinaryOperation(cil::Value resultVar, cil::Value lhs, BinaryOperationType binOpType, cil::Value rhs)
+	{
+		addTransCompData("local " + resultVar.toString() + " = " + lhs.toString());
+		addBinaryOperationType(binOpType);
+		addTransCompData(rhs.toString() + "\n");
+	}
 private:
+	void addConditionType(cilt::Condition::Type conditionType)
+	{
+		switch(conditionType)
+		{
+			case cilt::Condition::Type::LESS:
+				addTransCompData("<");
+				break;
+			case cilt::Condition::Type::LESS_EQUAL:
+				addTransCompData("<=");
+				break;
+			case cilt::Condition::Type::GREATER:
+				addTransCompData(">");
+				break;
+			case cilt::Condition::Type::GREATER_EQUAL:
+				addTransCompData(">=");
+				break;
+			case cilt::Condition::Type::EQUALS:
+				addTransCompData("==");
+				break;
+			case cilt::Condition::Type::NOT_EQUALS:
+				addTransCompData("~=");
+				break;
+		}
+	}
+
+	void addBinaryOperationType(BinaryOperationType binOpType)
+	{
+		switch(binOpType)
+		{
+			case BinaryOperationType::ADD:
+				addTransCompData("+");
+				break;
+			case BinaryOperationType::SUB:
+				addTransCompData("-");
+				break;
+			case BinaryOperationType::MUL:
+				addTransCompData("*");
+				break;
+			case BinaryOperationType::DIV:
+				addTransCompData("/");
+				break;
+		}
+	}
+
 	const std::string* getPredefinedMethod(const std::string &key)
 	{
 		std::unordered_map<std::string, std::string>::const_iterator it = m_predefinedMethods.find(key);
