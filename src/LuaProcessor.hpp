@@ -3,7 +3,7 @@ This file is part of CILTlua (https://github.com/DEC05EBA/CILTlua).
 
 CILTlua is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version 2 of the License, or
 (at your option) any later version.
 
 CILTlua is distributed in the hope that it will be useful,
@@ -206,14 +206,19 @@ public:
 		addTransCompData(")\n");
 	}
 
-	void onLoadField(cil::Value lhs, cil::Value obj, cil::Value field)
+	void onLoadField(cil::Value resultVar, cil::Value obj, cil::Value field)
 	{
-		addTransCompData("local " + lhs.toString() + " = " + obj.toString() + "." + field.toString() + "\n");
+		addTransCompData("local " + resultVar.toString() + " = " + obj.toString() + "." + field.toString() + "\n");
 	}
 
 	void onStoreField(cil::Value obj, cil::Value field, cil::Value rhs)
 	{
 		addTransCompData(obj.toString() + "." + field.toString() + " = " + rhs.toString() + "\n");
+	}
+
+	void onLoadStaticField(cil::Value resultVar, const std::string &namespaceName, const std::string &className, const std::string &field)
+	{
+		addTransCompData("local " + resultVar.toString() + " = " + namespaceName + "." + className + "." + field + "\n");
 	}
 
 	void onDefineClass(const std::string &className)

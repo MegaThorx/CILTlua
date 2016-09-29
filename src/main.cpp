@@ -3,7 +3,7 @@ This file is part of CILTlua (https://github.com/DEC05EBA/CILTlua).
 
 CILTlua is free software : you can redistribute it and / or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version 2 of the License, or
 (at your option) any later version.
 
 CILTlua is distributed in the hope that it will be useful,
@@ -33,7 +33,8 @@ int main()
 	};
 	LuaProcessor luaProcessor(methods);
 	
-	CompileResult compileResult = CILT::compile(inputFilepath, &luaProcessor);
+	vector<string> customDefinedAssemblies = { "mscorlib", "MTASAShared", "MTASAClient", "MTASAServer" };
+	CompileResult compileResult = CILT::compile(inputFilepath, &luaProcessor, customDefinedAssemblies);
 	if(compileResult.fail())
 	{
 		printf("Failed to compile, reason: %s\n", compileResult.getErrorMessage().c_str());
