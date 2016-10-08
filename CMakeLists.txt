@@ -16,4 +16,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Disable compiler specific extensions
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(ciltlua src/main.cpp CILT/src/cilt.cpp CILT/src/AST/CILTASTRoot.cpp)
+add_executable(ciltlua src/main.cpp CILT/src/cilt.cpp CILT/src/pe.cpp)

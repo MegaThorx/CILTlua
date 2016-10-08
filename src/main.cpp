@@ -24,14 +24,29 @@ int main()
 {
 	const path inputFilepath = PATH_STR("testInputFile");
 
-	unordered_map<string, string> methods =
+	unordered_map<string, string> predefinedReferences =
 	{
 		make_pair("MTASAClient.Chat.output", "outputChatBox"),
 		make_pair("MTASAClient.Console.output", "outputConsole"),
+		make_pair("MTASAClient.Graphics.drawRectangle", "dxDrawRectangle"),
 		make_pair("MTASAShared.Fps.getLimit", "getFPSLimit"),
 		make_pair("MTASAShared.Fps.setLimit", "setFPSLimit"),
+		make_pair("MTASAShared.Element.root", "getRootElement()"),
+		make_pair("MTASAShared.Event.", "addEventHandler"),
+		make_pair(".EventCallbackFunc.", "EventCallbackFunc"),
 	};
-	LuaProcessor luaProcessor(methods);
+
+	const char *predefinedCode = R"(
+function EventCallbackFunc(obj, callbackFunc)
+	if(obj == nil)then return callbackFunc end
+	return function(...)
+		obj:callbackFunc(...)
+	end
+end
+
+)";
+
+	LuaProcessor luaProcessor(predefinedReferences, predefinedCode);
 	
 	vector<string> customDefinedAssemblies = { "mscorlib", "MTASAShared", "MTASAClient", "MTASAServer" };
 	CompileResult compileResult = CILT::compile(inputFilepath, &luaProcessor, customDefinedAssemblies);
